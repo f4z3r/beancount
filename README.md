@@ -4,6 +4,7 @@
 
 # Beancount
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/f4z3r/beancount/lint-and-test.yml)
 ![GitHub License](https://img.shields.io/github/license/f4z3r/beancount?link=https%3A%2F%2Fgithub.com%2Ff4z3r%2Fbeancount%2Fblob%2Fmain%2FLICENSE)
 ![GitHub Release](https://img.shields.io/github/v/release/f4z3r/beancount?logo=github&link=https%3A%2F%2Fgithub.com%2Ff4z3r%2Fbeancount%2Freleases)
 ![LuaRocks](https://img.shields.io/luarocks/v/f4z3r/beancount?logo=lua&link=https%3A%2F%2Fluarocks.org%2Fmodules%2Ff4z3r%2Fbeancount)
