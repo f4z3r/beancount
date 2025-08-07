@@ -1,20 +1,25 @@
+--- Beancount module.
+-- This module provides capabilities to interact with beancount objects
+-- natively in Lua.
+
 local string = require("string")
 
 local M = {}
 
+---An amount consisting of a number and a commodity.
 ---@class Amount
 ---@field package amount number
----@field package unit string
+---@field package commodity string
 local Amount = {}
 
 ---Create a new amount.
 ---@param amount number
----@param unit string
+---@param commodity string
 ---@return Amount
-function Amount:new(amount, unit)
+function Amount:new(amount, commodity)
   local obj = {
     amount = amount,
-    unit = unit,
+    commodity = commodity,
   }
   setmetatable(obj, self)
   self.__index = self
@@ -22,15 +27,18 @@ function Amount:new(amount, unit)
 end
 
 function Amount:__tostring()
-  return string.format("%.2f %s", self.amount, self.unit)
+  return string.format("%.2f %s", self.amount, self.commodity)
 end
 
 ---@class Posting
----@field package _amount Amount?
+---@field package _commodity Amount?
 ---@field package _price Amount?
 ---@field package _account string
 local Posting = {}
 
+---Create a new posting for an account.
+---@param account string
+---@return Posting
 function Posting:new(account)
   local obj = {
     _account = account,
@@ -40,29 +48,30 @@ function Posting:new(account)
   return obj
 end
 
----Add units to posting.
+---Add a commodity to the posting.
 ---@param amount number
----@param unit string
+---@param commodity string
 ---@return Posting
-function Posting:units(amount, unit)
-  self._amount = Amount:new(amount, unit)
+function Posting:commodity(amount, commodity)
+  self._commodity = Amount:new(amount, commodity)
   return self
 end
 
----Add price to posting.
+---Add a price to the posting.
 ---@param amount number
----@param unit string
+---@param commodity string
 ---@return Posting
-function Posting:price(amount, unit)
-  self._price = Amount:new(amount, unit)
+function Posting:price(amount, commodity)
+  self._price = Amount:new(amount, commodity)
   return self
 end
 
 function Posting:__tostring()
   if self._price ~= nil then
-    return string.format("%-40s %15s @ %s", self._account, self._amount, self._price)
-  elseif self._amount ~= nil then
-    return string.format("%-40s %15s", self._account, self._amount)
+    assert(self._commodity ~= nil, "cannot set price without commotidy")
+    return string.format("%-40s %15s @ %s", self._account, self._commodity, self._price)
+  elseif self._commodity ~= nil then
+    return string.format("%-40s %15s", self._account, self._commodity)
   end
   return string.format("%s", self._account)
 end
@@ -76,16 +85,19 @@ end
 ---@field package _postings Posting[]
 local Transaction = {}
 
+---The type of a transaction.
 ---@enum TransactionType
 local TransactionType = {
   OK = "*",
+  NOK = "!",
 }
 
 ---Create a new Transaction
 ---@param date string
 ---@param desc string
----@return table
+---@return Transaction
 function Transaction:new(date, desc)
+  assert(string.match(date, "^%d%d%d%d%-%d%d%-%d%d$"))
   local obj = {
     _metadata = {},
     _tags = {},
@@ -113,7 +125,7 @@ end
 ---@return Transaction
 function Transaction:tag(...)
   for _, tag in ipairs({ ... }) do
-    self._tags[#self._tags+1] = tag
+    self._tags[#self._tags + 1] = tag
   end
   return self
 end
@@ -143,7 +155,7 @@ end
 function Transaction:__tostring()
   local header = string.format('%s %s "%s"', self._date, self._type, self._desc)
   for _, tag in ipairs(self._tags) do
-    header = header .. string.format(' #%s', tag)
+    header = header .. string.format(" #%s", tag)
   end
   local lines = { header }
   for k, v in pairs(self._metadata) do

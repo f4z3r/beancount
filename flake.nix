@@ -22,7 +22,7 @@
       };
       makeLuaShell = shellName: luaPackage:
         pkgs.mkShell {
-          packages = [luaPackage.busted];
+          packages = [luaPackage.busted pkgs.stylua];
         };
     in {
       devShells = builtins.mapAttrs makeLuaShell luaPackages;

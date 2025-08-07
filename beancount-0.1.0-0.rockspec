@@ -9,6 +9,9 @@ source = {
 description = {
   summary = "A library to interact with beancount objects directly in Lua.",
   detailed = [[
+     Interact with beancount objects in Lua with without depending on other
+     libraries. Work with the speed of LuaJIT with your ledgers without
+     any hassle.
    ]],
   homepage = "https://github.com/f4z3r/beancount/tree/main",
   license = "MIT",
