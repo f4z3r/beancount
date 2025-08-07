@@ -1,7 +1,7 @@
 name: Lint and test
 on:
-- push
-- pull_request
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   pipeline:
     runs-on: ubuntu-24.04
