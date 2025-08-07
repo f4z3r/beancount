@@ -1,9 +1,9 @@
-name: Stylua
+name: Lint and test
 on:
 - push
 - pull_request
 jobs:
-  stylua:
+  pipeline:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout
@@ -14,3 +14,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         version: 0.20.0
         args: --check .
+    - name: Busted
+      uses: lunarmodules/busted@v2.2.0

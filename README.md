@@ -1,6 +1,6 @@
 <div align="center">
 
-<!-- <img src="./assets/logo.jpeg" alt="Beancount" width="50%"> -->
+<img src="./assets/logo.jpeg" alt="Beancount" width="50%">
 
 # Beancount
 
