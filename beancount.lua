@@ -33,6 +33,7 @@ end
 ---@class Posting
 ---@field package _commodity Amount?
 ---@field package _price Amount?
+---@field package _total_cost Amount?
 ---@field package _account string
 local Posting = {}
 
@@ -66,8 +67,21 @@ function Posting:price(amount, commodity)
   return self
 end
 
+---Add a total_cost to the posting.
+---@param amount number
+---@param commodity string
+---@return Posting
+function Posting:total_cost(amount, commodity)
+  self._total_cost = Amount:new(amount, commodity)
+  return self
+end
+
 function Posting:__tostring()
-  if self._price ~= nil then
+  if self._total_cost ~= nil then
+    assert(self._commodity ~= nil, "cannot set total cost without commotidy")
+    assert(self._price == nil, "cannot set price and total cost")
+    return string.format("%-40s %15s @@ %s", self._account, self._commodity, self._total_cost)
+  elseif self._price ~= nil then
     assert(self._commodity ~= nil, "cannot set price without commotidy")
     return string.format("%-40s %15s @ %s", self._account, self._commodity, self._price)
   elseif self._commodity ~= nil then
