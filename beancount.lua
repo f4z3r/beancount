@@ -10,16 +10,19 @@ local M = {}
 ---@class Amount
 ---@field package amount number
 ---@field package commodity string
+---@field package multiplier number?
 local Amount = {}
 
 ---Create a new amount.
 ---@param amount number
 ---@param commodity string
+---@param multiplier number?
 ---@return Amount
-function Amount:new(amount, commodity)
+function Amount:new(amount, commodity, multiplier)
   local obj = {
     amount = amount,
     commodity = commodity,
+    multiplier = multiplier,
   }
   setmetatable(obj, self)
   self.__index = self
@@ -27,6 +30,9 @@ function Amount:new(amount, commodity)
 end
 
 function Amount:__tostring()
+  if self.multiplier then
+    return string.format("%d * %.2f %s", self.multiplier, self.amount, self.commodity)
+  end
   return string.format("%.2f %s", self.amount, self.commodity)
 end
 
@@ -52,9 +58,10 @@ end
 ---Add a commodity to the posting.
 ---@param amount number
 ---@param commodity string
+---@param quantity number?
 ---@return Posting
-function Posting:commodity(amount, commodity)
-  self._commodity = Amount:new(amount, commodity)
+function Posting:commodity(amount, commodity, quantity)
+  self._commodity = Amount:new(amount, commodity, quantity)
   return self
 end
 
