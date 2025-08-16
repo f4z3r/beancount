@@ -5,6 +5,7 @@
 ### Added
 
 - Support for total costs in postings.
+- Support for quantities in commodities.
 
 ## [0.1.0] - 2025-08-07
 
