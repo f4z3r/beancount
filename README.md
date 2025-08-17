@@ -43,7 +43,6 @@ them unless I need them. Thus don't expect stuff to be implemented just because 
 below. If you want to use this library and are missing a feature (regardless of whether this is
 listed below), open an issue and I will have a look.
 
-- [ ] Documentation: this I will add for sure.
 - [ ] Full support for transaction syntax, including posting costs, posting metadata, posting flags,
   etc.
 - [ ] Support for generating balances.

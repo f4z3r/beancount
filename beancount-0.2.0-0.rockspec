@@ -1,4 +1,4 @@
-local package_version = "0.1.0"
+local package_version = "0.2.0"
 rockspec_format = "3.0"
 package = "beancount"
 version = package_version .. "-0"
