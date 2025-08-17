@@ -14,9 +14,9 @@ local M = {}
 local Amount = {}
 
 ---Create a new amount.
----@param amount number
----@param commodity string
----@param multiplier number?
+---@param amount number A quantity. For instance the value 100 for an amount of "100 USD".
+---@param commodity string The commodity. For instance the string USD for an amount of "100 USD".
+---@param multiplier number? A potential multiplier in order to support multiplication arithmetic in the amount.
 ---@return Amount
 function Amount:new(amount, commodity, multiplier)
   local obj = {
@@ -36,6 +36,7 @@ function Amount:__tostring()
   return string.format("%.2f %s", self.amount, self.commodity)
 end
 
+---A posting on an account, optionally containing an amount.
 ---@class Posting
 ---@field package _commodity Amount?
 ---@field package _price Amount?
@@ -44,7 +45,7 @@ end
 local Posting = {}
 
 ---Create a new posting for an account.
----@param account string
+---@param account string The account for which to create a posting.
 ---@return Posting
 function Posting:new(account)
   local obj = {
@@ -56,27 +57,27 @@ function Posting:new(account)
 end
 
 ---Add a commodity to the posting.
----@param amount number
----@param commodity string
----@param quantity number?
+---@param amount number A quantity.
+---@param commodity string The commodity.
+---@param multiplier number? A potential multiplier in order to support multiplication arithmetic in the amount.
 ---@return Posting
-function Posting:commodity(amount, commodity, quantity)
-  self._commodity = Amount:new(amount, commodity, quantity)
+function Posting:commodity(amount, commodity, multiplier)
+  self._commodity = Amount:new(amount, commodity, multiplier)
   return self
 end
 
 ---Add a price to the posting.
----@param amount number
----@param commodity string
+---@param amount number A quantity.
+---@param commodity string The commodity.
 ---@return Posting
 function Posting:price(amount, commodity)
   self._price = Amount:new(amount, commodity)
   return self
 end
 
----Add a total_cost to the posting.
----@param amount number
----@param commodity string
+---Add a total cost to the posting.
+---@param amount number A quantity.
+---@param commodity string The commodity.
 ---@return Posting
 function Posting:total_cost(amount, commodity)
   self._total_cost = Amount:new(amount, commodity)
@@ -97,6 +98,7 @@ function Posting:__tostring()
   return string.format("%s", self._account)
 end
 
+---A full beancount transaction.
 ---@class Transaction
 ---@field package _metadata { [string]: string }
 ---@field package _tags string[]
@@ -113,9 +115,9 @@ local TransactionType = {
   NOK = "!",
 }
 
----Create a new Transaction
----@param date string
----@param desc string
+---Create a new transaction.
+---@param date string The date for the transaction.
+---@param desc string A description for the transaction.
 ---@return Transaction
 function Transaction:new(date, desc)
   assert(string.match(date, "^%d%d%d%d%-%d%d%-%d%d$"))
@@ -133,8 +135,8 @@ function Transaction:new(date, desc)
 end
 
 ---Add metadata to the transaction.
----@param key string
----@param value string
+---@param key string The key under which to add the metadata.
+---@param value string The value for the metadata point.
 ---@return Transaction
 function Transaction:metadata(key, value)
   self._metadata[key] = value
@@ -142,7 +144,7 @@ function Transaction:metadata(key, value)
 end
 
 ---Add tags to the transaction.
----@vararg string
+---@vararg string The tags to attach to the transaction.
 ---@return Transaction
 function Transaction:tag(...)
   for _, tag in ipairs({ ... }) do
@@ -152,7 +154,7 @@ function Transaction:tag(...)
 end
 
 ---Change the type of the transaction.
----@param typ TransactionType
+---@param typ TransactionType The type to assign to the transaction.
 ---@return Transaction
 function Transaction:type(typ)
   self._type = typ
@@ -165,11 +167,13 @@ function Transaction:date()
   return self._date
 end
 
----Set the postings for this transaction.
----@param postings Posting[]
+---Add a posting to this transaction.
+---@vararg Posting The postings to attach to the transaction.
 ---@return Transaction
-function Transaction:postings(postings)
-  self._postings = postings
+function Transaction:posting(...)
+  for _, posting in ipairs({ ... }) do
+    self._postings[#self._postings + 1] = posting
+  end
   return self
 end
 
