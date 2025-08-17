@@ -86,16 +86,16 @@ end
 
 function Posting:__tostring()
   if self._total_cost ~= nil then
-    assert(self._commodity ~= nil, "cannot set total cost without commotidy")
+    assert(self._commodity ~= nil, "cannot set total cost without commodity")
     assert(self._price == nil, "cannot set price and total cost")
     return string.format("%-40s %15s @@ %s", self._account, self._commodity, self._total_cost)
   elseif self._price ~= nil then
-    assert(self._commodity ~= nil, "cannot set price without commotidy")
+    assert(self._commodity ~= nil, "cannot set price without commodity")
     return string.format("%-40s %15s @ %s", self._account, self._commodity, self._price)
   elseif self._commodity ~= nil then
     return string.format("%-40s %15s", self._account, self._commodity)
   end
-  return string.format("%s", self._account)
+  return self._account
 end
 
 ---A full beancount transaction.
