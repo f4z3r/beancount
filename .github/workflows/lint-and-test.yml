@@ -15,4 +15,4 @@ jobs:
         version: 0.20.0
         args: --check .
     - name: Busted
-      uses: lunarmodules/busted@02f31a9c103a44e166617cfdb6ba1b8994a9c912 # v2.2.0
+      uses: lunarmodules/busted@56e6d68204d1456afa77f1346bf4e050df65b629 # v2.3.0
